@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My TG Wallet</title>
+    <!-- ይህ የቴሌግራም ልዩ ስክሪፕት ነው -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
         :root {
@@ -34,8 +36,30 @@
 <body>
     <div class="container">
         <div class="icon">🚀</div>
-        <h1>እንኳን ደህና መጡ!</h1>
-        <p>ይህ የእርስዎ ሚኒ-አፕ የኪስ ቦርሳ የመጀመሪያ ገፅ ነው። በቀጣይ እዚህ ላይ ቀሪ ሂሳብዎን እና ሌሎች መረጃዎችን እናሳያለን።</p>
+        <!-- ለዚህ ርዕስ መለያ (id) ሰጥተነዋል፤ በ JavaScript ለማግኘት እንዲመቸን -->
+        <h1 id="welcome-message">ሰላም! በመጫን ላይ...</h1>
+        <p>ይህ የእርስዎ ሚኒ-አፕ የኪስ ቦርሳ የመጀመሪያ ገፅ ነው።</p>
     </div>
+
+    <script>
+        // የቴሌግራም ዌብ አፕ ኦብጀክትን እናስጀምራለን
+        const tg = window.Telegram.WebApp;
+
+        // ገፁ ሲዘጋጅ ይህ ኮድ እንዲሰራ እናደርጋለን
+        document.addEventListener("DOMContentLoaded", function() {
+            // የተጠቃሚውን መረጃ ከቴሌግራም እንቀበላለን
+            const user = tg.initDataUnsafe.user;
+            const welcomeElement = document.getElementById("welcome-message");
+
+            // ተጠቃሚ ካለ...
+            if (user) {
+                // ርዕሱን ወደ ተጠቃሚው ስም እንቀይረዋለን
+                welcomeElement.innerText = `እንኳን ደህና መጣህ, ${user.first_name}!`;
+            } else {
+                // መረጃውን ማግኘት ካልቻልን ይህንን እናሳያለን
+                welcomeElement.innerText = "እንኳን ደህና መጡ!";
+            }
+        });
+    </script>
 </body>
 </html>
