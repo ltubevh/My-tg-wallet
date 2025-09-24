@@ -1,65 +1,88 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My TG Wallet</title>
-    <!-- ይህ የቴሌግራም ልዩ ስክሪፕት ነው -->
+    <!-- ቴሌግራም እና የእኛን ዌብ-አፕ የሚያገናኘው ዋናው ስክሪፕት -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        :root {
-            --tg-theme-bg-color: #212121;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-button-color: #5288c1;
-            --tg-theme-button-text-color: #ffffff;
-        }
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            height: 100vh;
+            font-family: sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
             margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 15px;
+            text-align: center;
         }
-        .container { max-width: 400px; }
-        .icon { font-size: 64px; }
-        h1 { font-size: 28px; font-weight: 700; margin-top: 10px; }
-        p { font-size: 16px; opacity: 0.8; }
+        .container {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        p {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: var(--tg-theme-button-color, #007bff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="icon">🚀</div>
-        <!-- ለዚህ ርዕስ መለያ (id) ሰጥተነዋል፤ በ JavaScript ለማግኘት እንዲመቸን -->
-        <h1 id="welcome-message">ሰላም! በመጫን ላይ...</h1>
-        <p>ይህ የእርስዎ ሚኒ-አፕ የኪስ ቦርሳ የመጀመሪያ ገፅ ነው።</p>
+        <!-- ይህ ጽሑፍ በ JavaScript ይለወጣል -->
+        <h1 id="welcome-message">እንኳን በደህና መጡ!</h1>
+        <p>ይህ የእርስዎ የግል የኪስ ቦርሳ ነው።</p>
+
+        <p id="user-info"></p>
+
+        <!-- ሚኒ-አፑን ለመዝጋት የሚያገለግል ቁልፍ -->
+        <button id="close-button">ዝጋ</button>
     </div>
 
     <script>
-        // የቴሌግራም ዌብ አፕ ኦብጀክትን እናስጀምራለን
-        const tg = window.Telegram.WebApp;
+        // የቴሌግራም ዌብ-አፕ ኦብጀክትን ማግኘት
+        let tg = window.Telegram.WebApp;
 
-        // ገፁ ሲዘጋጅ ይህ ኮድ እንዲሰራ እናደርጋለን
-        document.addEventListener("DOMContentLoaded", function() {
-            // የተጠቃሚውን መረጃ ከቴሌግራም እንቀበላለን
-            const user = tg.initDataUnsafe.user;
-            const welcomeElement = document.getElementById("welcome-message");
+        // 1. ሚኒ-አፑ ሲከፈት ሙሉ ስክሪን እንዲሆን ማድረግ
+        tg.expand();
 
-            // ተጠቃሚ ካለ...
-            if (user) {
-                // ርዕሱን ወደ ተጠቃሚው ስም እንቀይረዋለን
-                welcomeElement.innerText = `እንኳን ደህና መጣህ, ${user.first_name}!`;
-            } else {
-                // መረጃውን ማግኘት ካልቻልን ይህንን እናሳያለን
-                welcomeElement.innerText = "እንኳን ደህና መጡ!";
-            }
+        // 2. የተጠቃሚውን መረጃ ከቴሌግራም መውሰድ
+        // tg.initDataUnsafe.user ውስጥ የተጠቃሚው መረጃ ይገኛል
+        if (tg.initDataUnsafe.user) {
+            let user = tg.initDataUnsafe.user;
+
+            // "እንኳን በደህና መጡ!" የሚለውን ጽሑፍ በተጠቃሚው ስም መቀየር
+            let welcomeElement = document.getElementById('welcome-message');
+            // user.first_name የተጠቃሚውን የመጀመሪያ ስም ከቴሌግራም ያመጣል
+            welcomeElement.innerText = "ሰላም, " + user.first_name + "!";
+
+            // ተጨማሪ መረጃ ማሳየት (አማራጭ)
+            let userInfoElement = document.getElementById('user-info');
+            userInfoElement.innerText = "የእርስዎ User ID: " + user.id;
+
+        } else {
+            // ተጠቃሚው ከቴሌግራም ውጪ ከከፈተው ይህንን ያሳያል
+            document.getElementById('user-info').innerText = "እባክዎ ይህንን ገጽ በቴሌግራም ቦት ውስጥ ይክፈቱት።";
+        }
+
+        // 3. 'ዝጋ' የሚለውን ቁልፍ ስራ መስጠት
+        let closeButton = document.getElementById('close-button');
+        closeButton.addEventListener('click', function() {
+            // ይህ የቴሌግራም ትዕዛዝ ሲሆን ሚኒ-አፑን ይዘጋዋል
+            tg.close();
         });
+
     </script>
 </body>
 </html>
