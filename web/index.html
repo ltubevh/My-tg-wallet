@@ -1,219 +1,88 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wallet</title>
+    <title>My TG Wallet</title>
+    <!-- ቴሌግራም እና የእኛን ዌብ-አፕ የሚያገናኘው ዋናው ስክሪፕት -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ================== */
-        /*    CSS ዲዛይን     */
-        /* ================== */
-        :root {
-            --tg-theme-bg-color: #ffffff; /* ለቀን ሁነታ */
-            --tg-theme-text-color: #000000;
-            --tg-theme-button-color: #0088cc;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-hint-color: #999999;
-        }
-
         body {
+            font-family: sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
             margin: 0;
-            padding: 0;
-            padding-bottom: 80px; /* ለታችኛው ባር ቦታ ለመተው */
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* ----- ዋናው የይዘት ክፍል ----- */
-        #main-content {
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
-
-        .balance-card {
-            background-color: #f7f7f7;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
+        .container {
+            padding: 20px;
         }
-
-        .balance-card h2 {
-            margin: 0;
+        h1 {
+            font-size: 24px;
+        }
+        p {
             font-size: 16px;
-            color: var(--tg-theme-hint-color);
+            margin-top: 10px;
         }
-
-        .balance-card .amount {
-            font-size: 36px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .action-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+        button {
+            background-color: var(--tg-theme-button-color, #007bff);
+            color: var(--tg-theme-button-text-color, #ffffff);
             border: none;
-            border-radius: 10px;
-            padding: 15px 30px;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            font-weight: 500;
+            margin-top: 20px;
         }
-
-        .action-button span {
-            margin-top: 5px;
-        }
-
-        /* ----- የታችኛው ባር (Navigation) ----- */
-        .bottom-nav {
-            position: fixed; /* ከገጹ ጋር እንዳይንቀሳቀስ ያደርገዋል */
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 65px;
-            background-color: #ffffff;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--tg-theme-hint-color);
-            text-decoration: none;
-            font-size: 12px;
-            transition: color 0.2s;
-        }
-
-        .nav-item.active {
-            color: var(--tg-theme-button-color); /* የተመረጠውን ለማሳየት */
-        }
-        
-        .nav-item svg {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 4px;
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- ========================= -->
-    <!--  የኤችቲኤምኤል (HTML) መዋቅር  -->
-    <!-- ========================= -->
+    <div class="container">
+        <!-- ይህ ጽሑፍ በ JavaScript ይለወጣል -->
+        <h1 id="welcome-message">እንኳን በደህና መጡ!</h1>
+        <p>ይህ የእርስዎ የግል የኪስ ቦርሳ ነው።</p>
+        
+        <p id="user-info"></p>
 
-    <div id="main-content">
-        <!-- ይህ ክፍል በ JavaScript ይቀያየራል -->
+        <!-- ሚኒ-አፑን ለመዝጋት የሚያገለግል ቁልፍ -->
+        <button id="close-button">ዝጋ</button>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active" id="home-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"></path></svg>
-            <span>Home</span>
-        </a>
-        <a href="#" class="nav-item" id="swap-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"></path></svg>
-            <span>Swap</span>
-        </a>
-        <a href="#" class="nav-item" id="earn-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.25 14.5v-2.09c-2.83-.48-5-2.94-5-5.91h2c0 2.21 1.79 4 4 4s4-1.79 4-4h2c0 2.97-2.17 5.43-5 5.91v2.09h-2zM12 11c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"></path></svg>
-            <span>Earn</span>
-        </a>
-        <a href="#" class="nav-item" id="wallet-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path></svg>
-            <span>Wallet</span>
-        </a>
-    </nav>
-
-
-    <!-- ================================= -->
-    <!--  የጃቫስክሪፕት (JavaScript) ተግባር  -->
-    <!-- ================================= -->
     <script>
-        // የቴሌግራም ሚኒ-አፕ ስክሪፕት ለማገናኘት
-        // <script src="https://telegram.org/js/telegram-web-app.js"><\/script>
+        // የቴሌግራም ዌብ-አፕ ኦብጀክትን ማግኘት
+        let tg = window.Telegram.WebApp;
 
-        const mainContent = document.getElementById('main-content');
-        const navItems = document.querySelectorAll('.nav-item');
+        // 1. ሚኒ-አፑ ሲከፈት ሙሉ ስክሪን እንዲሆን ማድረግ
+        tg.expand();
 
-        // ገጾችን ለመጫን የተዘጋጀ ተግባር (function)
-        function loadHomePage() {
-            mainContent.innerHTML = `
-                <div class="balance-card">
-                    <h2>ጠቅላላ ቀሪ ሂሳብ</h2>
-                    <div class="amount">$1,234.56</div>
-                    <small>0.5 ETH</small>
-                </div>
-                <div class="actions">
-                    <button class="action-button">
-                        <svg viewBox="0 0 24 24" fill="currentColor" height="24" width="24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
-                        <span>ላክ</span>
-                    </button>
-                    <button class="action-button">
-                        <svg viewBox="0 0 24 24" fill="currentColor" height="24" width="24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/></svg>
-                        <span>ተቀበል</span>
-                    </button>
-                </div>
-                <h3>የቅርብ ጊዜ ግብይቶች</h3>
-                <p>እዚህ የግብይት ታሪክ ይታያል...</p>
-            `;
-        }
+        // 2. የተጠቃሚውን መረጃ ከቴሌግራም መውሰድ
+        // tg.initDataUnsafe.user ውስጥ የተጠቃሚው መረጃ ይገኛል
+        if (tg.initDataUnsafe.user) {
+            let user = tg.initDataUnsafe.user;
+            
+            // "እንኳን በደህና መጡ!" የሚለውን ጽሑፍ በተጠቃሚው ስም መቀየር
+            let welcomeElement = document.getElementById('welcome-message');
+            // user.first_name የተጠቃሚውን የመጀመሪያ ስም ከቴሌግራም ያመጣል
+            welcomeElement.innerText = "ሰላም, " + user.first_name + "!";
 
-        function loadSwapPage() {
-            mainContent.innerHTML = '<h1>Swap Page</h1><p>ይህ የ Swap ገጽ ነው።</p>';
+            // ተጨማሪ መረጃ ማሳየት (አማራጭ)
+            let userInfoElement = document.getElementById('user-info');
+            userInfoElement.innerText = "የእርስዎ User ID: " + user.id;
+
+        } else {
+            // ተጠቃሚው ከቴሌግራም ውጪ ከከፈተው ይህንን ያሳያል
+            document.getElementById('user-info').innerText = "እባክዎ ይህንን ገጽ በቴሌግራም ቦት ውስጥ ይክፈቱት።";
         }
         
-        function loadEarnPage() {
-            mainContent.innerHTML = '<h1>Earn Page</h1><p>ይህ የ Earn ገጽ ነው።</p>';
-        }
-
-        function loadWalletPage() {
-            mainContent.innerHTML = '<h1>Wallet Page</h1><p>ይህ የ Wallet ገጽ ነው።</p>';
-        }
-
-
-        // የታችኛው ባር ሲጫን ምን እንደሚሆን የሚቆጣጠር
-        navItems.forEach(item => {
-            item.addEventListener('click', (event) => {
-                event.preventDefault();
-
-                // 'active' የሚለውን ከሁሉም ላይ አንሳ
-                navItems.forEach(i => i.classList.remove('active'));
-                
-                // በተጫነው ላይ ብቻ 'active' ጨምር
-                item.classList.add('active');
-                
-                // በተጫነው ቁልፍ መሰረት ገጹን ቀይር
-                if (item.id === 'home-btn') {
-                    loadHomePage();
-                } else if (item.id === 'swap-btn') {
-                    loadSwapPage();
-                } else if (item.id === 'earn-btn') {
-                    loadEarnPage();
-                } else if (item.id === 'wallet-btn') {
-                    loadWalletPage();
-                }
-            });
+        // 3. 'ዝጋ' የሚለውን ቁልፍ ስራ መስጠት
+        let closeButton = document.getElementById('close-button');
+        closeButton.addEventListener('click', function() {
+            // ይህ የቴሌግራም ትዕዛዝ ሲሆን ሚኒ-አፑን ይዘጋዋል
+            tg.close();
         });
 
-        // መጀመሪያ ሲከፈት የ Home ገጽን ክፈት
-        loadHomePage();
     </script>
 </body>
 </html>
