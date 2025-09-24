@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My TG Wallet</title>
+    <!-- ይህ የቴሌግራም ልዩ ስክሪፕት ነው -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        :root {
+            --tg-theme-bg-color: #212121;
+            --tg-theme-text-color: #ffffff;
+            --tg-theme-button-color: #5288c1;
+            --tg-theme-button-text-color: #ffffff;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container { max-width: 400px; }
+        .icon { font-size: 64px; }
+        h1 { font-size: 28px; font-weight: 700; margin-top: 10px; }
+        p { font-size: 16px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🚀</div>
+        <!-- ለዚህ ርዕስ መለያ (id) ሰጥተነዋል፤ በ JavaScript ለማግኘት እንዲመቸን -->
+        <h1 id="welcome-message">ሰላም! በመጫን ላይ...</h1>
+        <p>ይህ የእርስዎ ሚኒ-አፕ የኪስ ቦርሳ የመጀመሪያ ገፅ ነው።</p>
+    </div>
+
+    <script>
+        // የቴሌግራም ዌብ አፕ ኦብጀክትን እናስጀምራለን
+        const tg = window.Telegram.WebApp;
+
+        // ገፁ ሲዘጋጅ ይህ ኮድ እንዲሰራ እናደርጋለን
+        document.addEventListener("DOMContentLoaded", function() {
+            // የተጠቃሚውን መረጃ ከቴሌግራም እንቀበላለን
+            const user = tg.initDataUnsafe.user;
+            const welcomeElement = document.getElementById("welcome-message");
+
+            // ተጠቃሚ ካለ...
+            if (user) {
+                // ርዕሱን ወደ ተጠቃሚው ስም እንቀይረዋለን
+                welcomeElement.innerText = `እንኳን ደህና መጣህ, ${user.first_name}!`;
+            } else {
+                // መረጃውን ማግኘት ካልቻልን ይህንን እናሳያለን
+                welcomeElement.innerText = "እንኳን ደህና መጡ!";
+            }
+        });
+    </script>
+</body>
+</html>
